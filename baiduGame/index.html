@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title>Angular Test</title>
+
+    <link rel="stylesheet" href="../lib/ionic/style/css/ionic.min.css"/>
+
+    <!-- angular -->
+    <link href="http://cdn.bootcss.com/angular.js/1.3.15/angular-csp.css" rel="stylesheet">
+    <script src="http://cdn.bootcss.com/angular.js/1.3.15/angular.min.js"></script>
+    <script src="http://cdn.bootcss.com/angular.js/1.3.15/angular-route.min.js"></script>
+
+    <link rel="stylesheet" href="css/list-item.css">
+    <link rel="stylesheet" href="css/list-card.css">
+    <link rel="stylesheet" href="css/app.css">
+
+    <script src="js/app.js"></script>
+
+</head>
+<body ng-app="myapp">
+<header class="header">
+    <div class="bar">
+        <button class="button button-back">返回</button>
+        <h1 class="title">标题</h1>
+        <button class="button button-clear"><i class="icon icon-android-menu" style="font-size: 30px;"></i></button>
+    </div>
+</header>
+<div class="content has-header has-footer padding">
+    <ul class="list soft-list" id="scroller" ng-controller="appListController">
+        <ng-view ng-show="!isLoading"></ng-view>
+        <br/>
+        <loading class="tc"></loading>
+    </ul>
+</div>
+<footer class="footer">
+    <div class="bar-tab tab-icon-top">
+        <a href="#/" class="tab-link"><i class="icon icon-bag"></i>软件</a>
+        <a href="#/list-item" class="tab-link"><i class="icon icon-ionic"></i>游戏</a>
+        <a href="#/list-card" class="tab-link"><i class="icon icon-android-playstore"></i>发现</a>
+    </div>
+</footer>
+</body>
+</html>

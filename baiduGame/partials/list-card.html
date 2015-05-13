@@ -1,0 +1,22 @@
+<section class="card-item" ng-repeat="item in dataList">
+    <div class="hd">
+        <span class="date">{{item.issue}}</span>
+        <span class="popular"><i class="icon icon-user"></i>{{item.popularity}}人气</span>
+    </div>
+    <div class="bd">
+        <a href="#" class="info-brief">
+            <img ng-src="http://iceapps.qiniudn.com/Finder/highimg/{{item.highimg}}">
+            <p class="info-text">{{item.desc}}</p>
+        </a>
+        <ul>
+            <li ng-repeat="app in item.apps">
+                <a href="#">
+                    <!--<img src="http://iceapps.qiniudn.com/default_icon.png" fallback-src={{app.icon}}>-->
+                    <img src="http://iceapps.qiniudn.com/default_icon.png" fallback-src="app.icon">
+                    <span class="sname">{{app.sname}}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</section>
+<button class="button button-block tc" ng-click="loadmore()">加载更多...</button>

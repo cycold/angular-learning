@@ -1,0 +1,21 @@
+<li class="item" ng-repeat="item in dataList">
+    <div class="row-flex app-main">
+        <img src="http://iceapps.qiniudn.com/default_icon.png" ng-src="http://iceapps.qiniudn.com/{{item.icon}}"/>
+        <dl class="col-flex text-info">
+            <dt>{{item.sname}}</dt>
+            <dd>{{item.description}}</dd>
+        </dl>
+        <a href="#" class="download">
+            <i class="icon icon-android-download"></i>
+            高速下载
+        </a>
+    </div>
+    <div style="margin: 0 12px">
+        <div class="row app-meta">
+            <a class="col" href="#"><i class="icon icon-document"></i>{{item.size}}</a>
+            <a class="col" href="#"><i class="icon icon-code-download"></i>{{item.strDownload}}下载</a>
+            <a class="col" href="#"><i class="icon icon-ios-list-outline"></i>{{item.catename}}</a>
+        </div>
+    </div>
+</li>
+<button class="button button-block tc" ng-click="loadmore()">加载更多...</button>
