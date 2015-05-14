@@ -3,3 +3,6 @@ body{
     overflow: auto;
 }
 
+.panel{
+    margin: 10px -10px;
+}
