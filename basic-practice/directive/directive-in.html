@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en" ng-app="test">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <!--<link rel="stylesheet" href="animate.css"/>-->
+    <link rel="stylesheet" href="animate-reveal.css"/>
+    <!-- angular -->
+    <link href="http://cdn.bootcss.com/angular.js/1.3.15/angular-csp.css" rel="stylesheet">
+    <script src="http://cdn.bootcss.com/angular.js/1.3.15/angular.min.js"></script>
+    <!--<script src="http://cdn.bootcss.com/angular.js/1.2.0/angular.min.js"></script>-->
+    <script src="http://cdn.bootcss.com/angular.js/1.3.15/angular-animate.min.js"></script>
+
+    <title>angular-directive</title>
+</head>
+<body>
+<div class="container" ng-controller="container">
+    <div class="panel panel-info">
+        <div class="panel-heading">angular内置指令</div>
+        <div class="panel-body">
+            <input type="text" ng-model="text" placeholder="TypetoEnable" class="form-control"/> <br/>
+            <button ng-model="button" ng-disabled="!text" type="submit" class="btn btn-info">Submit</button>
+           <p></p>
+            <div class="well">
+                <textarea rows="3" class="form-control" placeholder="Textarea" ng-disabled="isDisabled"></textarea>
+            </div>
+
+            <div class="well well-success">
+                <label>Select Two Fish:</label>
+                <input type="checkbox"
+                       ng-model="isTwoFish"><br/>
+                <select class="form-control">
+                    <option>One Fish</option>
+                    <option ng-selected="isTwoFish">Two Fish</option>
+                </select>
+            </div>
+
+            <div class="well">
+                <div ng-controller="someController">
+                    {{ someModel.someProperty }}
+                    <button class="btn btn-info" ng-click="someAction()">Communicate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-warning">
+        <div class="panel-heading">注意$scope的继承问题(复制值和复制引用)</div>
+        <div class="panel-body">
+            <div class="well" ng-controller="parentCtrl0">
+                {{ someBareValue }}
+                <button class="btn btn-default" ng-click="parentAction0()">Communicate to child</button>
+                <div class="well well-sm" ng-controller="childCtrl0">
+                    {{ someBareValue }}
+                    <button class="btn btn-primary" ng-click="childAction0()">Communicate to parent</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-warning">
+        <div class="panel-heading">注意$scope的继承问题(复制值和复制引用)</div>
+        <div class="panel-body">
+            <div class="well" ng-controller="parentCtrl1">
+                {{ someModel.someValue }}
+                <button class="btn btn-default" ng-click="parentAction1()">Communicate to child</button>
+                <div class="well well-sm" ng-controller="childCtrl1">
+                    {{ someModel.someValue }}
+                    <button class="btn btn-primary" ng-click="childAction1()">Communicate to parent</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">ng-include</div>
+        <div class="panel-body" ng-controller="ngIncludeCtrl">
+
+            <div ng-include=" 'static.html' "></div>
+            <hr/>
+            <div id="loading" ng-show="loading">Loading...</div>
+            <div class="form-inline">
+                <div class="form-group">
+                    <select name="" id="" class="form-control" ng-model="template" ng-options="t.name for t in templates">
+                        <option value="">(blank)</option>
+                    </select>
+                    <label for="">url of template: <tt>{{template.url}}</tt></label>
+                </div>
+                <div class="slide-animate-container">
+                    <div class="slide-reveal" ng-include="template.url" onload="afterPartialLoaded()"></div>
+                </div>
+            </div>
+
+
+            <!-- templates -->
+            <script type="text/ng-template" id="static.html">
+                <div class="well well-sm">
+                    注意ng-include="url",如果url字符串,注意使用单引号,这里默认url为angular表达式
+                </div>
+            </script>
+
+            <script type="text/ng-template" id="p1.html">
+                <div class="alert alert-success">
+                    p1
+                </div>
+            </script>
+
+            <script type="text/ng-template" id="p2.html">
+                <div class="alert alert-danger">
+                    p2
+                </div>
+            </script>
+        </div>
+    </div>
+
+    <div class="panel panel-danger">
+        <div class="panel-heading">ng-switch</div>
+        <div class="panel-body">
+            <input type="text" ng-model="person.name"/>
+            <div ng-switch on="person.name">
+                <p ng-switch-default>And the winner is</p>
+                <h1 ng-switch-when="Ari">{{ person.name }}</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-success">
+        <div class="panel-heading">ng-if 会从dom中移除或者克隆 不会保留中间的dom修改状态</div>
+        <div class="panel-body">
+            <input type="text" ng-model="ifText"/>
+
+            <div ng-if="ifText" attrText="{{ifText}}">
+                Hello {{ifText}}
+            </div>
+
+            <div ng-if="ifText === 'man' ">
+                Ok man
+            </div>
+
+        </div>
+    </div>
+
+    <div class="panel panel-info">
+        <div class="panel-heading">ng-repeat</div>
+        <div class="panel-body">
+            <ul ng-controller="PeopleController">
+                <style>
+                    .odd {
+                        background-color: #d6e9c6;
+                    }
+                    .even {
+                        background-color: #ebccd1;
+                    }
+                </style>
+                <li ng-repeat="person in people"
+                    ng-class="{ even: !$even, odd: !$odd }"
+                    index="{{$index}}"
+                    first="{{$first}}"
+                    middle="{{$middle}}"
+                    last="{{$last}}">
+                    {{ person.name }} lives in {{ person.city }}
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">ng-model-options</div>
+        <div class="panel-body">
+            <div>
+                Name
+                <input type="text" ng-model="user.name" ng-model-options="{updateOn: 'blur'}"/>
+                Hello {{user.name}}
+            </div>
+
+           <div>
+               <input type="text" ng-model="user.age" ng-model-options="{debounce: 1000}"/>
+               Hello {{user.age}}
+           </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">ng-change</div>
+        <div class="panel-body" ng-controller="EquationController">
+            <input type="text" ng-model="equation.x" ng-change="change()"/>
+            <code>{{ equation.output }}</code>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+    angular.module('test', ['ngAnimate'])
+            .run(function($rootScope, $timeout) {
+            	$rootScope.isDisabled = true;
+                $timeout(function() {
+                	$rootScope.isDisabled = false;
+                },5000);
+            })
+            .controller('container',function($scope) {
+
+            })
+            .controller('someController',function($scope) {
+
+            	//创建数据模型
+                $scope.someModel = {
+                    //添加属性
+                    someProperty: 'Hello computer'
+                };
+
+                //设置$scope自身的操作
+                $scope.someAction = function() {
+                	$scope.someModel.someProperty = 'Hello human';
+                };
+            })
+            .controller('parentCtrl0',function($scope) {
+            	// 反模式 裸值
+                $scope.someBareValue = 'hello computer';
+                // 设置$scope本身的操作,没问题
+                $scope.parentAction0 = function() {
+                	// 在parentCtrl0 和 childCtrl0 内部设置{{ someBareValue }}
+                    $scope.someBareValue = 'hello human, from parent';
+                }
+            })
+            .controller('childCtrl0',function($scope) {
+                // 在childCtrl0 内部设置{{ someBareValue }}
+            	$scope.childAction0 = function() {
+            		$scope.someBareValue = 'hello human, from child';
+            	}
+            })
+            .controller('parentCtrl1',function($scope) {
+            	// 最佳实践, 永远使用一个模式  如果将模型对象的某个属性设置为字符串，它会通过引用进行共享
+                $scope.someModel = {
+                    someValue: 'hello human'
+                };
+
+                $scope.parentAction1 = function() {
+                	$scope.someModel.someValue = 'hello human, from parent';
+                };
+            })
+            .controller('childCtrl1',function($scope) {
+            	$scope.childAction1 = function() {
+            		$scope.someModel.someValue = 'hello human, form child';
+            	};
+            })
+            .controller('ngIncludeCtrl',function($scope) {
+
+                $scope.templates = [
+                    {name:'p1.html',url:'p1.html'},
+                    {name:'p2.html',url:'p2.html'}
+                ];
+
+                $scope.template = $scope.templates[0];
+
+                $scope.afterPartialLoaded = function() {
+                	console.log('loaded...');
+                	console.log($scope.template);
+                }
+
+            })
+            .controller('PeopleController',function($scope) {
+            	$scope.people = [
+                    {name: "Ari", city: "San Francisco"},
+                    {name: "Ericky", city: "Seattle"},
+                    {name: "tom", city: "helkl"},
+                    {name: "feh", city: "sdfsd"},
+                    {name: "alice", city: "hunuu"},
+                ];
+            })
+            .controller('EquationController',function($scope) {
+            	$scope.equation = {};
+                $scope.change = function() {
+                	$scope.equation.output = parseInt($scope.equation.x) + 2;
+                };
+            })
+
+
+</script>
+</body>
+</html>

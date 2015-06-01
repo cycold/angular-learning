@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en" ng-app="test">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <!-- angular -->
+    <link href="http://cdn.bootcss.com/angular.js/1.3.15/angular-csp.css" rel="stylesheet">
+    <script src="http://cdn.bootcss.com/angular.js/1.3.15/angular.min.js"></script>
+    <title>angular-directive</title>
+</head>
+<body>
+    <div class="container" ng-controller="container">
+        <div class="well">
+            <p>$scope.url : {{url}}</p>
+            <p>newState: {{newState}}</p>
+            <div my-directive
+                 url="http://google.com"
+                 link-text="click me to go to google"
+                 state="good"   >
+                <p>newState: {{newState}}</p>
+            </div>
+        </div>
+
+        <div class="panel panel-success">
+            <div class="panel-heading">指令数据中绑定</div>
+            <div class="panel-body">
+                <!--<input type="text" ng-model="url"/>
+                <div my-directive
+                     url = "{{url}}"
+                     linkText = "hello" >
+                </div>-->
+
+                <div my-directive2
+                     url = "{{url}}"
+                     link-text = "hello" >
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-success">
+            <div class="panel-heading">两个隔离的作用域之间的数据绑定</div>
+            <div class="panel-body">
+                <label>Their URL field:</label>
+                <input type="text" ng-model="theirUrl"/>
+                <div my-directive3
+                     some-attr="theirUrl"
+                     my-link-text="click link text"
+                     ></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    angular.module('test', [])
+            .controller('container',function($scope) {
+            	$scope.url = "http://baidu.com";
+            	$scope.newState = "parentState";
+                $scope.newState2 = 'parentbad2';
+            })
+            .directive('myDirective', function() {
+                return {
+                    restrict: 'A',
+                    replace: true,
+                    scope: {    //创建一个isolate-scope
+                        url: '@',   //同DOM属性url绑定 因为这里要绑定的属性名相同,所以使用@符号省略 @表示和dom属性关联,dom属性值可以是表达式或者字符串 @主要作用:属性的值复制给新作用域对象中的属性值
+                        linkText: '@', //同属性link-text绑定
+                        newState: '@state' //这里的newState同指令DOM中的属性state绑定起来
+                        //像这些属性url, linkText, newState属于这个指令的内部属性(属于isolaote-scope作用域中), 它可以喝该指令的DOM属性绑定
+                    },
+                    template: '<a href="{{ url }}"> {{ linkText }} -- {{newState}} {{newState2}}</a>',
+                    controller: function($scope) {
+                    	//指令可以有他自己的控制器
+                        $scope.newState = 'bad';
+                        $scope.newState3 = 'bad2';
+                    }
+                }
+            })
+            .directive('myDirective2',function() {
+            	return {
+                    restrict: 'A',
+                    replace: true,
+                    template: '<div> <input type="text" ng-model="myUrl" /> <a href="{{myUrl}}">{{myLinkText}}</a> </div>'
+                }
+            })
+            .directive('myDirective3', function() {
+            	return {
+                    restrict: 'A',
+                    replace: true,
+                    scope: {
+                        myUrl: '=someAttr', //= 表示和外部的作用域中的属性关联 此时不再是DOM属性了 DOM属性值只能是字符串即某一scope的属性名 这里类似于指针,复制的是引用
+                        myLinkText: '@'
+                    },
+                    template:  '<div><label>My Url Field:</label><input type="text" ng-model="myUrl" /><a href="{{myUrl}}">{{myLinkText}}</a></div>'
+                }
+            })
+</script>
+</body>
+</html>
