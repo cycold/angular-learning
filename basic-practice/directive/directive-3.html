@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title>angualr指令练习</title>
+
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <!--<script src="http://cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>-->
+
+    <!-- angular -->
+    <link href="http://cdn.bootcss.com/angular.js/1.3.15/angular-csp.css" rel="stylesheet">
+    <script src="http://cdn.bootcss.com/angular.js/1.3.15/angular.min.js"></script>
+    <!--<script src="http://cdn.bootcss.com/angular.js/1.3.15/angular-animate.min.js"></script>    -->
+</head>
+<body ng-app="myApp">
+    <div class="container">
+        <div class="alert alert-success">angualr指令练习: 参考: <a href="http://blog.jobbole.com/62249/" >AngularJS 指令实践指南</a></div>
+
+        <div class="panel panel-default" ng-controller="ctrlA">
+            <div class="panel-heading">Link函数和scope空间</div>
+            <div class="panel-body">
+                <input type="text" ng-model="color" placeholder="Enter a color" />
+                <hello-world/>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">compile函数理解</div>
+            <div class="panel-body" ng-controller="ctrlB">
+                <compile hello="world">Hello</compile>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">隔离scope和父scope之间的数据绑定</div>
+            <div class="panel-body" ng-controller="ctrlC">
+                <input type="text" ng-model="color" placeholder="enter a color"/>
+                <!--<hello-world-c color-attr="{{color}}"></hello-world-c>-->  <!-- 单向绑定 -->
+                <!--<hello-world-c color-attr="color"></hello-world-c>-->         <!-- 双向绑定 -->
+                <hello-world-c color-attr="color" change-color="change()"></hello-world-c>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">Transclusion（嵌入）</div>
+            <div class="panel-body" ng-controller="ctrlD">
+                <div output-text>
+                    <p>Hello {{name}}</p>
+                </div>
+                <div output-text>
+                    <p>I love {{hobby}}!!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">transclude:’element’ 和 transclude:true的区别</div>
+            <div class="panel-body" ng-controller="ctrlE">
+                <p transclude-directive>Hello World!</p>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">controller 函数和 require</div>
+            <div class="panel-body" ng-controller="ctrlF">
+                <outer-directive>
+                    <inner-directive>指令间的通信</inner-directive>
+                </outer-directive>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        var myApp = angular.module('myApp',[])
+
+        myApp.controller('ctrlA',function() {
+        	console.log('ctrlA');
+        });
+        myApp.directive('helloWorld',function() {
+        	return {
+                restrict: 'EA',
+                replace: true,
+                template: '<p style="background-color: {{color}}">Hello World!</p>',
+                link: function(scope, element, attrs, controller) {
+
+                	element.bind('click',function() {
+                		element.css('background-color','white');
+
+                        scope.$apply(function() {
+                            scope.color = "white";
+                        });
+
+                	});
+
+                    element.bind('mouseover',function() {
+                    	element.css('cursor','pointer');
+                    });
+
+                }
+            }
+        });
+
+        myApp.controller('ctrlB',function($scope) {
+            console.log('ctrlB');
+            $scope.tt = "haha";
+        });
+        myApp.directive('compile',function() {
+        	return {
+                restrict: 'EA',
+                replace: true,
+                template: '<p style="background-color:#f90">Hello World',
+                compile: function(tElem, attrs) {
+                    console.log(tElem);
+                    console.log(attrs);
+                    tElem.addClass('well');
+                    return function(scope, element, attrs) {
+                    	console.log(scope);
+                    	console.log(element);
+                    }
+                }
+            }
+        });
+
+        myApp.controller('ctrlC',function($scope) {
+        	console.log('ctrlC');
+
+            $scope.colors = ['red', 'orange', 'green'];
+
+            $scope.change = function() {
+            	return $scope.colors[Math.floor((Math.random()*3))];
+            };
+        });
+
+        myApp.directive('helloWorldC',function() {
+        	return {
+                restrict: 'EA',
+                replace: true,
+                template: '<p style="background-color: {{ color }}">hello world c</p>',
+                scope: {
+                    //color: '@colorAttr'     //单向绑定
+                    color: '=colorAttr',       //双向绑定
+                    changeColor: '&changeColor'
+                },
+                link: function(scope, element, attrs) {
+                	element.bind('click',function() {
+                		element.css('background-color','white');
+
+                        scope.$apply(function() {
+                            scope.color = "white";
+                        });
+                	});
+
+                    element.bind('mouseover',function() {
+                    	element.css('cursor','pointer');
+
+                        scope.$apply(function() {
+                        	scope.color = scope.changeColor();
+                        });
+                    });
+
+                    scope.$watch('color',function(newVal, oldVal) {
+                        console.log('changed detected');
+                        console.log('newVal',newVal);
+                        console.log('oldVal',oldVal);
+                    });
+                }
+            };
+        });
+
+        myApp.controller('ctrlD',function($scope) {
+        	console.log('ctrlD');
+            $scope.name = 'World';
+            $scope.hobby='AngularJS';
+        });
+
+        myApp.directive('outputText',function() {
+        	return {
+                transclude: true,
+                scope: {},
+                template: '<div ng-transclude></div>'
+            };
+        });
+
+        myApp.controller('ctrlE',function($scope) {
+        	$scope.name = 'world';
+        });
+
+        myApp.directive('transcludeDirective',function() {
+        	return {
+                transclude: 'element',
+                scope: {},
+                restrict: 'EA',
+                replace: true,
+                link: function(scope,element,attrs,ctrl,transclude) {
+                    transclude(scope,function(clone) {
+                    	clone.css('background-color','yellow');
+                        console.log(element);
+                        //element.after(clone);
+                        //element.append(clone);
+                        element.prepend(clone);
+                    });
+                },
+
+                template: '<div ng-transclude></div>'
+            }
+        });
+
+        myApp.controller('ctrlF',function($scope) {
+        	console.log('ctrlF');
+            $scope.name = 'World';
+        });
+
+        myApp.directive('outerDirective',function() {
+        	return {
+                scope: {},
+                restrict: 'EA',
+                controller: function($scope, $compile, $http) {  // $scope is the appropriate scope for the directive
+                    // this refers to the controller
+                	this.addChild = function(nestedDirective) {
+                		console.log('Got the message from nested directive: ' + nestedDirective.message);
+                	}
+                }
+            };
+        });
+
+        myApp.directive('innerDirective',function() {
+        	return {
+                scope: {},
+                restrict: 'EA',
+                require: '^outerDirective',
+                link: function(scope, element, attr, controllerInstance) {  //the fourth argument is the controller instance you require
+                	scope.message = "Hi, parent directive";
+                    controllerInstance.addChild(scope);
+                }
+            }
+        });
+
+
+
+
+
+
+    </script>
+</body>
+</html>

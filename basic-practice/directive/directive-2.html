@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en" ng-app="test">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <!--<link rel="stylesheet" href="animate.css"/>-->
+    <link rel="stylesheet" href="animate-reveal.css"/>
+    <!-- angular -->
+    <link href="http://cdn.bootcss.com/angular.js/1.3.15/angular-csp.css" rel="stylesheet">
+    <script src="http://cdn.bootcss.com/angular.js/1.3.15/angular.min.js"></script>
+    <!--<script src="http://cdn.bootcss.com/angular.js/1.2.0/angular.min.js"></script>-->
+    <script src="http://cdn.bootcss.com/angular.js/1.3.15/angular-animate.min.js"></script>
+
+    <title>angular-directive</title>
+</head>
+<body>
+<div class="container" ng-controller="containerCtrl">
+    <div class="panel panel-info">
+        <div class="panel-heading">指令作用域</div>
+        <div class="panel-body">
+            <div ng-init="someProperty = 'some data' "></div>
+            <div ng-init="siblingProperty = 'more data' ">
+                Inside Div Two: {{ aThirdProperty }}
+                <div ng-init="aThirdProperty = 'data for 3rd property' " ng-controller="SomeController">
+                    Inside Div Three: {{ aThirdProperty }} <br/>
+                    <div ng-controller="SecondController">
+                        Inside Div Four: {{ aThirdProperty }}
+                        <br/>
+                        <span>Outside myDirective: {{ myProperty }}</span>
+                        <div my-directive ng-init="myProperty = 'wow, this is cool' ">
+                            Inside myDirective: {{ myProperty }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-success">
+        <div class="panel-heading">指令的隔离作用域</div>
+        <div class="panel-body">
+            Outside myDirectiveA: {{ myPropertyA }}
+            <div ng-controller="ctrla">
+                Outside myDirectiveA: {{ myPropertyA }}
+                <div my-directive-a ng-init="myPropertyA = 'oww, hello world'">
+                    Inside myDirectiveA: {{ myPropertyA }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">隔离作用域与继承作用域</div>
+        <div class="panel-body">
+            <div ng-init="myPropertyB='wow,this is cool'">
+                Surrounding scope: {{ myPropertyB }}
+                <div my-inherit-scope-directive>
+                    Inside an directive with inherited scope: {{ myPropertyB }}
+                </div>
+                <div my-directive-b>
+                    Inside myDirective, isolate scope: {{ myPropertyB }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    angular.module('test', ['ngAnimate'])
+            .controller('containerCtrl',function() {
+                console.log('containerCtrl');
+            })
+            .controller('SomeController',function() {
+                console.log('SomeController');
+            })
+            .controller('SecondController',function() {
+                console.log('SecondController');
+            })
+            .controller('ctrla',function($scope) {
+                console.log($scope);
+            })
+
+            .directive('myDirective',function() {
+                return {
+                    restrict: 'A',
+                    scope: true
+                }
+            })
+            .directive('myDirectiveA',function() {
+            	return {
+                    restrict: 'A',
+                    scope: true,            //创建一个能够从外部原型继承作用域的指令，将scope属性设置为true  当scope设置为true时，会从父作用域继承并创建一个新的作用域对象
+                                              //此时指令中的属性myPropertyA只属于指令作用域, 不在属于控制器ctrla中的作用域了
+
+                    scope: {
+                        //myPropertyA: 'isolate - a'
+                    },                //如果是一个对象,就会创建一个隔离的作用域,此隔离作用域只产生在指令的模版中(使用template/templateURL指定的),所有当scope设置为对象时,一定要有tempalte或者templatgeURL
+
+                    priority: 100,
+                    template: '<div>Inside myDirectiveA - {{ myPropertyA }}<div>'  //创建的isolate作用域只针对指令模板即 使用template / templateURL指定的模版 中的作用域
+                };
+            })
+            .directive('myDirectiveB', function() {
+                return {
+                    restrict: 'A',
+                    template: 'Inside myDirective, isolate scope: {{ myPropertyB }}',
+                    scope: {}
+                };
+            })
+            .directive('myInheritScopeDirective', function() {
+                return {
+                    restrict: 'A',
+                    template: 'Inside an directive with inherited scope: {{ myPropertyB }}',
+                    scope: true
+                };
+            })
+
+
+</script>
+</body>
+</html>

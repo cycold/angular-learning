@@ -64,9 +64,9 @@
                     replace: true,
                     scope: {    //创建一个isolate-scope
                         url: '@',   //同DOM属性url绑定 因为这里要绑定的属性名相同,所以使用@符号省略 @表示和dom属性关联,dom属性值可以是表达式或者字符串 @主要作用:属性的值复制给新作用域对象中的属性值
-                        linkText: '@', //同属性link-text绑定
+                        linkText: '@', //同属性link-text绑定 name 值传递 （字符串，单向绑定）
                         newState: '@state' //这里的newState同指令DOM中的属性state绑定起来
-                        //像这些属性url, linkText, newState属于这个指令的内部属性(属于isolaote-scope作用域中), 它可以喝该指令的DOM属性绑定
+                        //像这些属性url, linkText, newState属于这个指令的内部属性(属于isolaote-scope作用域中), 它可以和该指令的DOM属性绑定
                     },
                     template: '<a href="{{ url }}"> {{ linkText }} -- {{newState}} {{newState2}}</a>',
                     controller: function($scope) {
@@ -88,7 +88,7 @@
                     restrict: 'A',
                     replace: true,
                     scope: {
-                        myUrl: '=someAttr', //= 表示和外部的作用域中的属性关联 此时不再是DOM属性了 DOM属性值只能是字符串即某一scope的属性名 这里类似于指针,复制的是引用
+                        myUrl: '=someAttr', //= 表示和外部的作用域中的属性关联 此时不再是DOM属性了 DOM属性值只能是字符串即某一scope的属性名 这里类似于指针,复制的是引用 双向绑定
                         myLinkText: '@'
                     },
                     template:  '<div><label>My Url Field:</label><input type="text" ng-model="myUrl" /><a href="{{myUrl}}">{{myLinkText}}</a></div>'
