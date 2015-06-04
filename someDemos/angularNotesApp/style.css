@@ -1,0 +1,18 @@
+notepad {
+    display: block;
+    width: 500px;
+    padding: 10px 10px;
+    margin: auto;
+}
+.note-area{
+    height: 450px;
+    background: url("http://extremecss.com/demos/paper.jpg") center center no-repeat;
+    overflow-y: scroll;
+    margin-bottom: 10px;
+}
+#editor {
+    padding: 10px;
+    font-weight: bold;
+    padding-left: 40px;
+    font-size: 20px;
+}
