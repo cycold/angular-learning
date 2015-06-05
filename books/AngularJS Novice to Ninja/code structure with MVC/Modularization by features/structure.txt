@@ -1,0 +1,31 @@
+/app
+	/img -- application level images
+	/css -- application level css
+	/js
+		app.js -- the main app module
+	/modules
+
+		/login
+			/js
+				controllers.js --controllers for login module
+                directives.js --directives for login module
+            /views
+                -- views for login module
+            /css
+            /img
+            loginModule.js -- Main login module definition
+
+        /comment
+            /js
+                controllers.js --controllers for login module
+                directives.js --directives for login module
+            /views
+                -- views for comment module
+            /css
+            /img
+            commentModule.js -- Main comment module definition
+
+        ...
+    ...
+
+    index.html

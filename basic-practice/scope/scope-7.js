@@ -39,7 +39,7 @@ Scope.prototype.$apply = function(expr) {
         this.$beginPhase("$digest");
         return this.$eval(expr);
     } finally {
-        this.$clearPhase();
+        this.$clearPhase();  ///不管什么情况都会执行finally，包括try catch 里面用了return ,可以理解为只要执行了try或者catch，就一定会执行 finally
         this.$digest();  //$digest的调用放置于finally块中，以确保即使函数抛出异常，也会执行digest。
     }
 };

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title>AngularJS note app</title>
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <!--<script src="http://cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>-->
+
+</head>
+<body ng-app="myApp">
+
+<div class="container" ng-controller="mainCtrl">
+    <button class="btn btn-info" ng-click="scheduleTask()">Get Message after 3 seconds</button>
+    <div class="well">Message fetched: {{message}}</div>
+    <button class="btn btn-primary" ng-click="use$timeout()">Get Message after 3 seconds don't call $apply()</button>
+</div>
+
+
+<!-- angular -->
+<link href="http://cdn.bootcss.com/angular.js/1.3.15/angular-csp.css" rel="stylesheet">
+<script src="http://cdn.bootcss.com/angular.js/1.3.15/angular.min.js"></script>
+<script src="http://cdn.bootcss.com/angular-ui-router/0.2.14/angular-ui-router.min.js"></script>
+
+<script>
+    angular.module('myApp',[])
+        .controller('mainCtrl',function($scope,$timeout) {
+            console.log("$scope.$$phase",$scope.$$phase);
+            $scope.scheduleTask = function() {
+            	/*setTimeout(function() {
+            		$scope.message = "Fetched after 3 seconds !";
+                    console.log('message = '+$scope.message); //log this to console
+            	}, 3000);*/
+
+                /*setTimeout(function() {
+                    $scope.message = "Fetched after 3 seconds !";
+                    console.log('message = '+$scope.message); //log this to console
+
+                    $scope.$apply(); // 调用没有参数的$apply启动$digest
+                }, 3000)*/
+
+
+                setTimeout(function() {
+
+                    $scope.$apply(function() {      //最好是调用带参数的$apply(fn),参数为函数,将需要更新的代码放到这个函数中,$apply内部会对其进行try,防止出错
+                        $scope.message = "Fetched after 3 seconds !";
+                        console.log('message = '+$scope.message); //log this to console
+                        console.log("$scope.$$phase",$scope.$$phase);
+                    });
+
+                    //$apply 内部定义伪代码
+                    /*$apply = function(fn) {
+                        try {
+                            fn();
+                        } finally {
+                            $digest();
+                        }
+                     }*/
+
+                    //等效于下面的伪代码 只是加了一个出错检查处理程序
+
+                   /* try {
+                        $scope.message = "Fetched after 3 seconds !";
+                        console.log('message = '+$scope.message); //log this to console
+                    } finally {
+                        $apply();
+                    }*/
+
+
+                }, 3000)
+
+
+
+
+            };
+
+            $scope.use$timeout = function() {
+                console.log('click');
+                $timeout(function() {
+                    $scope.message = "Fetched after 3 seconds don't call $apply()!";
+                    console.log('message = '+$scope.message); //log this to console
+                    console.log("$scope.$$phase",$scope.$$phase);
+                },3000);
+            };
+
+
+        })
+
+</script>
+</body>
+</html>
