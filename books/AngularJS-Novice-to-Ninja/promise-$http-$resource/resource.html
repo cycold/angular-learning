@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title>AngularJS note app</title>
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <!--<script src="http://cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>-->
+
+</head>
+<body ng-app="myApp">
+
+    <div class="container" ng-controller="MainController">
+        <div class="panel panel-default" ng-controller="ResourceController">
+            
+        </div>
+    </div>
+
+
+    <!-- angular -->
+    <link href="http://cdn.bootcss.com/angular.js/1.3.15/angular-csp.css" rel="stylesheet">
+    <script src="http://cdn.bootcss.com/angular.js/1.3.15/angular.min.js"></script>
+    <script src="http://cdn.bootcss.com/angular.js/1.3.15/angular-resource.min.js"></script>
+
+    <script>
+        angular.module('myApp',['ngResource'])
+            .controller('MainController',function() {
+            	
+            })
+            .controller('ResourceController',function($scope, Entry) {
+            	var entry = Entry.get({ id: $scope.id}, function() {    //get() return a single entry
+            		console.log(entry);
+            	});
+
+                var entries = Entry.query(function() {  //query() return all the entries
+                	console.log(entries);
+                });
+
+                $scope.entry = new Entry(); //You can instantiate resource class
+
+                $scope.entry.data = 'some data';    //so, $scope.entry = {data: 'some data}
+
+                Entry.save($scope.entry, function() {
+                    //saves serializes $scope.entry object as JSON and sends as POST body
+                });
+
+                Entry.delete({ id: $scope.id}, function() {
+                	console.log('Deleted form server');
+                });
+            });
+        
+        
+        angular('myApp').factory('Entry',function($resource) {
+        	return  $resource('/api/entries/:id');  //Note the full endpoint address
+        });
+    </script>
+</body>
+</html>
+
